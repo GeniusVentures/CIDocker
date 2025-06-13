@@ -41,3 +41,5 @@ rm rustup-init; \
 chmod -R a+w $RUSTUP_HOME $CARGO_HOME;
 
 EOF
+
+RUN git config --system --add safe.directory '*'
