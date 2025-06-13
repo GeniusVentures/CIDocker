@@ -16,6 +16,7 @@ apt install -y -t bullseye-backports \
     ruby-full \
     clang \
     cmake \
+    gh \
     wget
 
 EOF
