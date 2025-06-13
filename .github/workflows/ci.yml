@@ -1,5 +1,9 @@
 name: ci
 
+permissions:
+  contents: read          # repo files
+  packages: write         # allow write to GHCR
+
 on:
   push:
 
