@@ -17,8 +17,8 @@ apt install -y -t bullseye-backports \
     clang \
     cmake \
     gh \
-    wget
-
+    wget \
+    curl
 EOF
 
 RUN <<EOF
