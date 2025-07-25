@@ -1,10 +1,12 @@
 # syntax=docker/dockerfile:1
-FROM debian:bullseye-backports
+FROM debian:bullseye
 
 ENV RUSTUP_HOME=/usr/local/rustup \
     CARGO_HOME=/usr/local/cargo \
     PATH=/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH \
     RUST_VERSION=1.87.0
+
+RUN echo 'deb http://archive.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list
 
 RUN <<EOF
 
@@ -19,6 +21,7 @@ apt install -y -t bullseye-backports \
     gh \
     wget \
     curl
+    
 EOF
 
 RUN <<EOF
