@@ -20,8 +20,9 @@ apt install -y -t bullseye-backports \
     cmake \
     gh \
     wget \
-    curl
-    
+    curl \
+    libsecret-1-dev
+        
 EOF
 
 RUN <<EOF
