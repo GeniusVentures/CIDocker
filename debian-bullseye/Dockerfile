@@ -21,11 +21,11 @@ apt install -y -t bullseye-backports \
     gh \
     wget \
     curl \
-    libsecret-1-dev
-
-apt install -y \
+    libsecret-1-dev \
     dbus \
-    gnome-keyring
+    gnome-keyring \
+    ninja-build \
+    libvulkan-dev
 
 EOF
 
