@@ -21,10 +21,12 @@ apt install -y -t bullseye-backports \
     gh \
     wget \
     curl \
-    libsecret-1-dev \
+    libsecret-1-dev
+
+apt install -y \
     dbus \
     gnome-keyring
-        
+
 EOF
 
 RUN <<EOF
@@ -53,4 +55,3 @@ RUN git config --system --add safe.directory '*'
 RUN mkdir -p /var/lib/dbus && \
     cat /proc/sys/kernel/random/uuid | tr -d '-' > /var/lib/dbus/machine-id && \
     cp /var/lib/dbus/machine-id /etc/machine-id
-
