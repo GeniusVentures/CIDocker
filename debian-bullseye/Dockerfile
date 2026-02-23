@@ -22,7 +22,8 @@ apt install -y -t bullseye-backports \
     wget \
     curl \
     libsecret-1-dev \
-    dbus
+    dbus \
+    gnome-keyring
         
 EOF
 
