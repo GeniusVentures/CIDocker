@@ -10,6 +10,8 @@ RUN echo 'deb http://archive.debian.org/debian bullseye-backports main' > /etc/a
 
 RUN <<EOF
 
+set -eux
+
 apt update
 apt install -y -t bullseye-backports \
     sudo \
@@ -32,6 +34,8 @@ EOF
 
 RUN <<EOF
 
+set -eux
+
 dpkgArch="$(dpkg --print-architecture)"; \
 case "${dpkgArch##*-}" in \
     amd64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='20a06e644b0d9bd2fbdbfd52d42540bdde820ea7df86e92e533c073da0cdd43c' ;; \
@@ -53,10 +57,12 @@ EOF
 
 RUN <<EOF
 
+set -eux
+
 dpkgArch="$(dpkg --print-architecture)"; \
 case "${dpkgArch##*-}" in \
     amd64) jdkArch='x64'; javaDir='amd64' ;; \
-    armhf) jdkArch='arm'; javaDir='armhf' ;; \
+    armhf) echo >&2 "armhf is not supported by Temurin JDK 25 Linux binaries"; exit 1 ;; \
     arm64) jdkArch='aarch64'; javaDir='arm64' ;; \
     i386) echo >&2 "i386 not supported by Temurin"; exit 1 ;; \
     *) echo >&2 "unsupported architecture: ${dpkgArch}"; exit 1 ;; \
@@ -64,11 +70,15 @@ esac; \
 
 mkdir -p /usr/lib/jvm; \
 cd /tmp; \
-wget -q https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.1+9/OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz; \
-tar -xzf OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz -C /usr/lib/jvm; \
-mv /usr/lib/jvm/jdk-25.0.1+9 /usr/lib/jvm/temurin-25-jdk-${javaDir}; \
+jdkReleaseTag="jdk-25.0.2+10"; \
+jdkArchive="OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.2_10.tar.gz"; \
+wget -q "https://github.com/adoptium/temurin25-binaries/releases/download/${jdkReleaseTag}/${jdkArchive}"; \
+extractedDir="$(tar -tzf "${jdkArchive}" | head -1 | cut -d/ -f1)"; \
+test -n "${extractedDir}"; \
+tar -xzf "${jdkArchive}" -C /usr/lib/jvm; \
+mv "/usr/lib/jvm/${extractedDir}" "/usr/lib/jvm/temurin-25-jdk-${javaDir}"; \
 ln -sfn /usr/lib/jvm/temurin-25-jdk-${javaDir} /usr/lib/jvm/temurin-25-jdk; \
-rm OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz; \
+rm "${jdkArchive}"; \
 
 javaHome="/usr/lib/jvm/temurin-25-jdk"; \
 echo "export JAVA_HOME=${javaHome}" >> /etc/profile.d/java-env.sh; \
