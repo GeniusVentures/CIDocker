@@ -21,6 +21,7 @@ apt install -y -t bullseye-backports \
     gh \
     wget \
     curl \
+    libcurl4-openssl-dev \
     libsecret-1-dev \
     dbus \
     gnome-keyring \
@@ -47,6 +48,31 @@ chmod +x rustup-init; \
 ./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch}; \
 rm rustup-init; \
 chmod -R a+w $RUSTUP_HOME $CARGO_HOME;
+
+EOF
+
+RUN curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - && \
+    echo "deb https://packages.adoptium.net/artifactory/deb bullseye main" > /etc/apt/sources.list.d/adoptium.list
+
+RUN <<EOF
+
+apt update
+apt install -y temurin-25-jdk
+
+dpkgArch="$(dpkg --print-architecture)"; \
+case "${dpkgArch##*-}" in \
+    amd64) jdkArch='amd64' ;; \
+    armhf) jdkArch='armhf' ;; \
+    arm64) jdkArch='arm64' ;; \
+    i386) jdkArch='i386' ;; \
+    *) echo >&2 "unsupported architecture: ${dpkgArch}"; exit 1 ;; \
+esac; \
+
+javaHome="/usr/lib/jvm/temurin-25-jdk-${jdkArch}"; \
+echo "export JAVA_HOME=${javaHome}" >> /etc/profile.d/java-env.sh; \
+echo "export JAVA_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh; \
+echo "export JAVA_INCLUDE_PATH2=\$JAVA_HOME/include/linux" >> /etc/profile.d/java-env.sh; \
+echo "export JAVA_AWT_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh;
 
 EOF
 
