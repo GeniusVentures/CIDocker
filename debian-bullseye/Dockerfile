@@ -67,15 +67,24 @@ cd /tmp; \
 wget -q https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.1+9/OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz; \
 tar -xzf OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz -C /usr/lib/jvm; \
 mv /usr/lib/jvm/jdk-25.0.1+9 /usr/lib/jvm/temurin-25-jdk-${javaDir}; \
+ln -sfn /usr/lib/jvm/temurin-25-jdk-${javaDir} /usr/lib/jvm/temurin-25-jdk; \
 rm OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz; \
 
-javaHome="/usr/lib/jvm/temurin-25-jdk-${javaDir}"; \
+javaHome="/usr/lib/jvm/temurin-25-jdk"; \
 echo "export JAVA_HOME=${javaHome}" >> /etc/profile.d/java-env.sh; \
 echo "export JAVA_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh; \
 echo "export JAVA_INCLUDE_PATH2=\$JAVA_HOME/include/linux" >> /etc/profile.d/java-env.sh; \
 echo "export JAVA_AWT_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh;
 
 EOF
+
+ENV JAVA_HOME=/usr/lib/jvm/temurin-25-jdk \
+    JAVA_INCLUDE_PATH=/usr/lib/jvm/temurin-25-jdk/include \
+    JAVA_INCLUDE_PATH2=/usr/lib/jvm/temurin-25-jdk/include/linux \
+    JAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/temurin-25-jdk/include \
+    JAVA_JVM_LIBRARY=/usr/lib/jvm/temurin-25-jdk/lib/server/libjvm.so \
+    JDK_HOME=/usr/lib/jvm/temurin-25-jdk \
+    PATH=/usr/lib/jvm/temurin-25-jdk/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 RUN git config --system --add safe.directory '*'
 
