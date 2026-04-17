@@ -51,24 +51,25 @@ chmod -R a+w $RUSTUP_HOME $CARGO_HOME;
 
 EOF
 
-RUN curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - && \
-    echo "deb https://packages.adoptium.net/artifactory/deb bullseye main" > /etc/apt/sources.list.d/adoptium.list
-
 RUN <<EOF
-
-apt update
-apt install -y temurin-25-jdk
 
 dpkgArch="$(dpkg --print-architecture)"; \
 case "${dpkgArch##*-}" in \
-    amd64) jdkArch='amd64' ;; \
-    armhf) jdkArch='armhf' ;; \
-    arm64) jdkArch='arm64' ;; \
-    i386) jdkArch='i386' ;; \
+    amd64) jdkArch='x64'; javaDir='amd64' ;; \
+    armhf) jdkArch='arm'; javaDir='armhf' ;; \
+    arm64) jdkArch='aarch64'; javaDir='arm64' ;; \
+    i386) echo >&2 "i386 not supported by Temurin"; exit 1 ;; \
     *) echo >&2 "unsupported architecture: ${dpkgArch}"; exit 1 ;; \
 esac; \
 
-javaHome="/usr/lib/jvm/temurin-25-jdk-${jdkArch}"; \
+mkdir -p /usr/lib/jvm; \
+cd /tmp; \
+wget -q https://github.com/adoptium/temurin25-binaries/releases/download/jdk-25.0.1+9/OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz; \
+tar -xzf OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz -C /usr/lib/jvm; \
+mv /usr/lib/jvm/jdk-25.0.1+9 /usr/lib/jvm/temurin-25-jdk-${javaDir}; \
+rm OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.1_9.tar.gz; \
+
+javaHome="/usr/lib/jvm/temurin-25-jdk-${javaDir}"; \
 echo "export JAVA_HOME=${javaHome}" >> /etc/profile.d/java-env.sh; \
 echo "export JAVA_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh; \
 echo "export JAVA_INCLUDE_PATH2=\$JAVA_HOME/include/linux" >> /etc/profile.d/java-env.sh; \
