@@ -28,7 +28,8 @@ apt install -y -t bullseye-backports \
     dbus \
     gnome-keyring \
     ninja-build \
-    libvulkan-dev
+    libvulkan-dev \
+    libgtk-3-dev
 
 EOF
 
