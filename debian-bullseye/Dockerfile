@@ -30,7 +30,33 @@ apt install -y -t bullseye-backports \
     ninja-build \
     libvulkan-dev \
     libgtk-3-dev \
-    jq
+    jq \
+    libatomic1
+
+EOF
+
+RUN <<EOF
+
+set -eux
+
+# mold: bullseye has no mold package, and clang 11 predates -fuse-ld=mold, so install the
+# upstream static build and register it as the default ld. Revert with
+# `update-alternatives --set ld /usr/bin/ld.bfd` if a link ever misbehaves.
+dpkgArch="$(dpkg --print-architecture)"; \
+case "${dpkgArch##*-}" in \
+    amd64) moldArch='x86_64' ;; \
+    arm64) moldArch='aarch64' ;; \
+    *) echo >&2 "unsupported architecture for mold: ${dpkgArch}"; exit 1 ;; \
+esac; \
+
+moldVersion="2.42.0"; \
+moldArchive="mold-${moldVersion}-${moldArch}-linux.tar.gz"; \
+cd /tmp; \
+wget -q "https://github.com/rui314/mold/releases/download/v${moldVersion}/${moldArchive}"; \
+tar -xzf "${moldArchive}" -C /usr/local --strip-components=1; \
+rm "${moldArchive}"; \
+update-alternatives --install /usr/bin/ld ld /usr/local/bin/ld.mold 100; \
+ld --version;
 
 curl -fsSL https://deb.nodesource.com/setup_24.x | sudo -E bash -
 sudo apt install -y nodejs
