@@ -15,7 +15,7 @@ Requirements for the AlmaLinux 8 image. Each maps to roadmap phases.
 
 ### System Packages
 
-- [ ] **PKG-01**: Installs EL8 equivalents of every bullseye package — `libcurl-devel`, `libsecret-devel`, `gtk3-devel`, `vulkan-loader` + `vulkan-loader-devel` + `vulkan-headers`, `libatomic`, `pkgconf-pkg-config`, `ruby` + `ruby-devel`, `clang` (via llvm-toolset module), `cmake`, `ninja-build`, `git`, `gh`, `wget`, `curl`, `dbus`, `gnome-keyring`, `jq`, `sudo`, plus `gcc`/`gcc-c++`/`make`/`binutils`
+- [x] **PKG-01**: Installs EL8 equivalents of every bullseye package — `libcurl-devel`, `libsecret-devel`, `gtk3-devel`, `vulkan-loader` + `vulkan-loader-devel` + `vulkan-headers`, `libatomic`, `pkgconf-pkg-config`, `ruby` + `ruby-devel`, `clang` (via llvm-toolset module), `cmake`, `ninja-build`, `git`, `gh`, `wget`, `curl`, `dbus`, `gnome-keyring`, `jq`, `sudo`, plus `gcc`/`gcc-c++`/`make`/`binutils`
 - [ ] **PKG-02**: Seeded dbus `machine-id` and `git` safe.directory are configured
 
 ### Toolchain
@@ -61,7 +61,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BASE-01 | Phase 1 | Complete |
 | BASE-02 | Phase 1 | Complete |
 | BASE-03 | Phase 4 | Pending |
-| PKG-01 | Phase 1 | Pending |
+| PKG-01 | Phase 1 | Complete |
 | PKG-02 | Phase 2 | Pending |
 | TOOL-01 | Phase 2 | Pending |
 | TOOL-02 | Phase 2 | Pending |

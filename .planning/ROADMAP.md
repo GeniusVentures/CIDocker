@@ -14,7 +14,7 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
 
 - Integer phases (1, 2, 3, 4): Planned milestone work
 
-- [ ] **Phase 1: Base & Package Install** - `almalinux:8` base, ordered dnf repo enablement, full EL8 package set
+- [x] **Phase 1: Base & Package Install** - `almalinux:8` base, ordered dnf repo enablement, full EL8 package set (completed 2026-09-08)
 - [ ] **Phase 2: Toolchain Install** - mold, Node 24, Rust 1.87.0, Temurin JDK 25, env contract, runtime glue
 - [ ] **Phase 3: Parity & Verification** - toolchain/behavioral parity vs `debian-bullseye`, GTK gap audit
 - [ ] **Phase 4: Multi-arch Verification** - `amd64` + `arm64` buildx sign-off, 32-bit exclusion
@@ -34,7 +34,7 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
   3. The full mapped EL8 package list installs in one dnf transaction — `sudo`, `pkgconf-pkg-config`, `git`, `ruby`+`ruby-devel`, `clang` (via `llvm-toolset` module), `cmake`, `gh`, `wget`, `curl`, `libcurl-devel`, `libsecret-devel`, `dbus`+`dbus-daemon`+`dbus-tools`, `gnome-keyring`, `ninja-build`, `vulkan-loader`+`vulkan-loader-devel`+`vulkan-headers`, `gtk3-devel`, `jq`, `libatomic`, plus `gcc`/`gcc-c++`/`make`/`binutils`.
   4. `docker build` completes with `dnf clean all`, leaving no dnf package cache and a lean image comparable in size to `debian-bullseye`.
 
-**Plans**: 1/2 plans executed
+**Plans**: 2/2 plans complete
 
 Plans:
 **Wave 1**
@@ -43,7 +43,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — Full PKG-01 package set (one dnf transaction) + in-image verification chain + clean build
+- [x] 01-02-PLAN.md — Full PKG-01 package set (one dnf transaction) + in-image verification chain + clean build
 
 ### Phase 2: Toolchain Install
 
@@ -98,7 +98,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Base & Package Install | 1/2 | In Progress|  |
+| 1. Base & Package Install | 2/2 | Complete   | 2026-09-08 |
 | 2. Toolchain Install | 0/TBD | Not started | - |
 | 3. Parity & Verification | 0/TBD | Not started | - |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |
