@@ -34,8 +34,8 @@ RUN dnf config-manager --set-enabled powertools
 # 4) GitHub CLI official rpm repo (gh is in no EL repo).
 RUN dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
 
-# 5) NodeSource 24.x rpm repo (enabled here per BASE-02; nodejs itself is installed in
-#    Phase 2). Fetched over TLS with -fsSL (fail on error) and deleted after use.
+# 5) NodeSource 24.x rpm repo (enabled here per BASE-02; the Node runtime itself is
+#    installed in Phase 2). Fetched over TLS with -fsSL (fail on error) and deleted after use.
 RUN <<EOF
 
 set -eux
@@ -48,18 +48,35 @@ EOF
 #    module, so this must precede any `dnf install clang`.
 RUN dnf module enable llvm-toolset -y
 
-# [walking-skeleton package slice — Plan 02 replaces this with the full PKG-01 list]
+# 7) Pin the Ruby module stream before install — ruby/ruby-devel resolves to 3.1.x
+#    (NOT the EOL default 2.5) per 01-RESEARCH.md Q1 (RESOLVED).
+RUN dnf module enable ruby:3.1 -y
+
+# 8) Single install transaction — full mapped PKG-01 package set.
+#    The Node runtime is deliberately EXCLUDED (Phase 2). chkconfig is already in the bootstrap layer.
 RUN <<EOF
 
 set -eux
 
 dnf install -y \
-    pkgconf-pkg-config \
     sudo \
+    pkgconf-pkg-config \
     git \
-    wget \
-    curl \
+    ruby ruby-devel \
+    clang \
+    cmake \
+    make gcc gcc-c++ binutils \
+    gh \
+    openssl-devel \
+    libcurl-devel \
+    libsecret-devel \
+    dbus dbus-daemon dbus-tools \
+    gnome-keyring \
+    ninja-build \
+    vulkan-loader vulkan-loader-devel vulkan-headers \
+    gtk3-devel \
     jq \
+    libatomic \
 && dnf clean all \
 && rm -rf /var/cache/dnf
 
