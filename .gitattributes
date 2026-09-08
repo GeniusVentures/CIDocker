@@ -1,0 +1,4 @@
+# Dockerfiles use heredoc (RUN <<EOF) syntax, which requires LF line endings.
+# Force LF regardless of the user's core.autocrlf setting so docker build never
+# receives CRLF heredoc content.
+Dockerfile text eol=lf

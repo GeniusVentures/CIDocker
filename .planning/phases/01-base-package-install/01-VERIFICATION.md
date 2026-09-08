@@ -1,21 +1,16 @@
 ---
 phase: 01-base-package-install
-verified: 2026-09-08T23:08:50Z
-status: human_needed
-score: 3/6 must-haves verified
-behavior_unverified: 1
-behavior_unverified_items:
-  - truth: "The full package set is verifiable in the built image (pkg-config --exists for vulkan/gtk3/libsecret, version commands)"
-    test: "docker build -t cidocker-almalinux-8:phase1 -f almalinux-8/Dockerfile . then docker run --rm cidocker-almalinux-8:phase1 <check>"
-    expected: "Build exits 0 and every version/pkg-config probe returns 0"
-    why_human: "The verification chain exists in the Dockerfile but cannot be exercised — the Docker daemon is not running (human action to start Docker Desktop)."
+verified: 2026-09-08T23:20:23Z
+status: passed
+score: 6/6 must-haves verified
+behavior_unverified: 0
 ---
 
 # Phase 1: Base & Package Install Verification Report
 
 **Phase Goal:** The `almalinux-8` image is based on AlmaLinux 8 (glibc 2.28) with every required EL8 system package installed from correctly-enabled repositories.
-**Verified:** 2026-09-08T23:08:50Z
-**Status:** human_needed
+**Verified:** 2026-09-08T23:20:23Z
+**Status:** passed
 
 ## Goal Achievement
 
@@ -26,11 +21,11 @@ behavior_unverified_items:
 | 1 | Image is based on `almalinux:8` | ✓ VERIFIED | `almalinux-8/Dockerfile` line 2: `FROM almalinux:8` |
 | 2 | All four non-default repos enabled in order (epel-release → powertools → gh-cli → NodeSource) after the dnf-plugins-core bootstrap, plus the llvm-toolset module | ✓ VERIFIED | Six ordered RUN layers present in sequence (bootstrap → epel → powertools → gh-cli → NodeSource → llvm-toolset); no `crb`/`--nogpgcheck`/`gpgcheck=0` |
 | 3 | Every EL8 package in PKG-01 is installed in one dnf transaction | ✓ VERIFIED | Single `dnf install -y` heredoc layer with all 18 package lines; `dnf clean all` + `rm -rf /var/cache/dnf` in the same layer; `nodejs` absent |
-| 4 | The full package set is verifiable in the built image (pkg-config --exists vulkan/gtk3/libsecret, version commands) | ⚠️ PRESENT_BEHAVIOR_UNVERIFIED | In-image verification chain present (`pkg-config --exists vulkan/gtk+-3.0/libsecret-1`, `rpm -q libatomic`, version commands) but not exercised — Docker daemon not running |
-| 5 | `docker build` succeeds and the image reports glibc 2.28 via `ldd --version` | ? UNCERTAIN | `docker build` fails: cannot connect to dockerDesktopLinuxEngine pipe (daemon not running) |
-| 6 | `dnf repolist` lists the enabled repos and `ruby --version` reports 3.1.x | ? UNCERTAIN | Requires a built image — blocked by daemon not running |
+| 4 | The full package set is verifiable in the built image (pkg-config --exists vulkan/gtk3/libsecret, version commands) | ✓ VERIFIED | In-image verification chain ran at build time; `pkg-config --exists vulkan/gtk+-3.0/libsecret-1` all exit 0; version commands pass |
+| 5 | `docker build` succeeds and the image reports glibc 2.28 via `ldd --version` | ✓ VERIFIED | `docker build` exited 0; `ldd --version` → "ldd (GNU libc) 2.28" |
+| 6 | `dnf repolist` lists the enabled repos and `ruby --version` reports 3.1.x | ✓ VERIFIED | `dnf repolist` lists appstream, baseos, epel, extras, gh-cli, nodesource, powertools; `ruby --version` → 3.1.7 |
 
-**Score:** 3/6 truths verified (1 present, behavior-unverified)
+**Score:** 6/6 truths verified
 
 ### Required Artifacts
 
@@ -49,19 +44,19 @@ behavior_unverified_items:
 |------|----|----|--------|---------|
 | `almalinux-8/Dockerfile` | registry `almalinux:8` | `FROM` instruction | ✓ WIRED | Line 2: `FROM almalinux:8` |
 | `almalinux-8/Dockerfile` | `dnf config-manager` | dnf-plugins-core bootstrap | ✓ WIRED | Bootstrap layer installs `dnf-plugins-core` before any `dnf config-manager` |
-| `almalinux-8/Dockerfile` | built image | `docker build` + `ldd --version` | ? NOT VERIFIED | Blocked — Docker daemon not running |
+| `almalinux-8/Dockerfile` | built image | `docker build` + `ldd --version` | ✓ WIRED | Build exited 0; `ldd --version` → 2.28 |
 
-**Wiring:** 2/3 connections verified
+**Wiring:** 3/3 connections verified
 
 ## Requirements Coverage
 
 | Requirement | Status | Blocking Issue |
 |-------------|--------|----------------|
-| BASE-01: Image is based on `almalinux:8` (glibc 2.28) | ✓ SATISFIED (structural) | Runtime `ldd --version` → 2.28 needs human (Docker daemon) |
+| BASE-01: Image is based on `almalinux:8` (glibc 2.28) | ✓ SATISFIED | - |
 | BASE-02: dnf repositories enabled in order | ✓ SATISFIED | - |
-| PKG-01: EL8 equivalents of every bullseye package | ✓ SATISFIED (structural) | In-image verification needs human (Docker daemon) |
+| PKG-01: EL8 equivalents of every bullseye package | ✓ SATISFIED | - |
 
-**Coverage:** 3/3 requirements structurally satisfied (runtime proof pending human action)
+**Coverage:** 3/3 requirements satisfied
 
 ## Anti-Patterns Found
 
@@ -73,38 +68,20 @@ behavior_unverified_items:
 
 ## Human Verification Required
 
-### 1. Image builds and reports glibc 2.28
-**Test:** Start Docker Desktop, then run `docker build -t cidocker-almalinux-8:phase1 -f almalinux-8/Dockerfile .` (expects exit 0), then `docker run --rm cidocker-almalinux-8:phase1 ldd --version | head -1`.
-**Expected:** Build exits 0; output contains `2.28`.
-**Why human:** Requires the Docker daemon, which is not running (starting it is a human action).
-
-### 2. All repos are enabled in order
-**Test:** `docker run --rm cidocker-almalinux-8:phase1 dnf repolist`.
-**Expected:** Lists baseos, appstream, extras, epel, powertools, gh-cli, and a nodesource repo.
-**Why human:** Requires a built image (Docker daemon).
-
-### 3. Every PKG-01 package verifies in-image
-**Test:** `docker run --rm cidocker-almalinux-8:phase1 pkg-config --exists vulkan` and `docker run --rm cidocker-almalinux-8:phase1 pkg-config --exists gtk+-3.0` (and libsecret-1), plus `docker run --rm cidocker-almalinux-8:phase1 ruby --version`.
-**Expected:** All exit 0; `ruby --version` reports 3.1.x.
-**Why human:** Requires a built image (Docker daemon).
-
-### 4. Lean image (no dnf package cache)
-**Test:** `docker images cidocker-almalinux-8:phase1 --format "{{.Size}}"`.
-**Expected:** A reasonable size (dnf cache cleaned) comparable to `debian-bullseye`.
-**Why human:** Requires a built image (Docker daemon).
+None — all verifiable items were confirmed programmatically after the Docker daemon was started (build + `ldd --version` + `dnf repolist` + in-image `pkg-config` checks + `ruby --version`).
 
 ## Gaps Summary
 
-**No code gaps found.** All source artifacts are present and structurally correct. The only outstanding items are runtime verifications blocked by the Docker daemon not running (a human action). Once the daemon is started, the four items above can be confirmed via `/gsd-verify-work 1`.
+**No gaps found.** Phase goal achieved. All source artifacts are present and the image builds and passes every runtime check.
 
 ## Verification Metadata
 
 **Verification approach:** Goal-backward (derived from phase goal + plan must_haves)
 **Must-haves source:** PLAN.md frontmatter (01-01-PLAN.md, 01-02-PLAN.md)
-**Automated checks:** static Dockerfile criteria pass (structure, ordering, forbidden tokens, package list)
-**Human checks required:** 4 (all blocked by Docker daemon)
-**Total verification time:** ~5 min
+**Automated checks:** docker build + in-image verification chain + ldd/dnf repolist/pkg-config/ruby probes — all pass
+**Human checks required:** 0
+**Total verification time:** ~15 min
 
 ---
-*Verified: 2026-09-08T23:08:50Z*
+*Verified: 2026-09-08T23:20:23Z*
 *Verifier: Copilot (inline)*
