@@ -13,7 +13,7 @@
 |---|---|---|
 | Base image | `almalinux:8` (rolling, glibc 2.28) | RHEL-clone glibc 2.28 satisfies the ≤2.31 binary-compat constraint; Docker Official Image publishes amd64 + arm64 manifests; supported to May 2029 |
 | Package manager | `dnf` | Replaces apt; EL8 has no dpkg/backports repo |
-| Repo enablement order | `dnf-plugins-core` → `epel-release` → `powertools` (CRB) → `gh-cli.repo` → NodeSource `setup_24.x`, then `dnf module enable llvm-toolset` | `config-manager` lives in `dnf-plugins-core`; `powertools` is the EL8 CRB id (never `crb`); `gh` exists only in the GitHub CLI repo; clang is delivered only via the llvm-toolset module |
+| Repo enablement order | `dnf-plugins-core` → `epel-release` → `powertools` (CRB) → `gh-cli.repo` → NodeSource `rpm.nodesource.com/setup_24.x`, then `dnf module enable llvm-toolset` | `config-manager` lives in `dnf-plugins-core`; `powertools` is the EL8 CRB id (never `crb`); `gh` exists only in the GitHub CLI repo; clang is delivered only via the llvm-toolset module |
 | Compiler | clang via `llvm-toolset` module (17.x); `gcc`/`gcc-c++` kept only for `cc` + libc headers | EL8 clang is module-only; base gcc 8.5 is too old to be the compiler of record |
 | Directory layout | `almalinux-8/Dockerfile` alongside `debian-bullseye/Dockerfile` | CI keys off the lowercase distro+version directory name; mirrors the existing convention |
 
