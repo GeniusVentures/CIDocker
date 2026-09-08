@@ -30,7 +30,11 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
   2. The image builds successfully with `dnf-plugins-core`, PowerTools/CRB (`powertools`), the GitHub CLI repo, and NodeSource enabled in the required order (evidenced by `dnf repolist` in the build output).
   3. The full mapped EL8 package list installs in one dnf transaction — `sudo`, `pkgconf-pkg-config`, `git`, `ruby`+`ruby-devel`, `clang` (via `llvm-toolset` module), `cmake`, `gh`, `wget`, `curl`, `libcurl-devel`, `libsecret-devel`, `dbus`+`dbus-daemon`+`dbus-tools`, `gnome-keyring`, `ninja-build`, `vulkan-loader`+`vulkan-loader-devel`+`vulkan-headers`, `gtk3-devel`, `jq`, `libatomic`, plus `gcc`/`gcc-c++`/`make`/`binutils`.
   4. `docker build` completes with `dnf clean all`, leaving no dnf package cache and a lean image comparable in size to `debian-bullseye`.
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Walking skeleton: base + ENV + ordered repos + thin package slice, SKELETON.md contract
+- [ ] 01-02-PLAN.md — Full PKG-01 package set (one dnf transaction) + in-image verification chain + clean build
 
 ### Phase 2: Toolchain Install
 **Goal**: The image carries the full pinned toolchain and environment contract, completing it as a drop-in replacement for `debian-bullseye`.
@@ -76,7 +80,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Base & Package Install | 0/TBD | Not started | - |
+| 1. Base & Package Install | 0/2 | Planned | - |
 | 2. Toolchain Install | 0/TBD | Not started | - |
 | 3. Parity & Verification | 0/TBD | Not started | - |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |
