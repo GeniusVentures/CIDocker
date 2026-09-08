@@ -19,11 +19,11 @@
 
 ## Stack Touched in Phase 1
 
-- [x] Base image — `FROM almalinux:8`
-- [x] Repo enablement — 5 ordered repos + `llvm-toolset` module
-- [x] Package install — walking-skeleton slice (Plan 01), full PKG-01 list (Plan 02)
-- [x] Cache cleanup — `dnf clean all` + `rm -rf /var/cache/dnf` in the install layer
-- [x] Build-time verification — `ldd --version` → 2.28, `dnf repolist`, in-image package chain
+- [ ] Base image — `FROM almalinux:8`
+- [ ] Repo enablement — 5 ordered repos + `llvm-toolset` module
+- [ ] Package install — walking-skeleton slice (Plan 01), full PKG-01 list (Plan 02)
+- [ ] Cache cleanup — `dnf clean all` + `rm -rf /var/cache/dnf` in the install layer
+- [ ] Build-time verification — `ldd --version` → 2.28, `dnf repolist`, in-image package chain
 
 ## Out of Scope (Deferred to Later Slices)
 

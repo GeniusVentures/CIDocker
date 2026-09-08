@@ -304,7 +304,7 @@ Every item below **cannot** be resolved from local files or Repology and must be
 3. **`vulkan-loader-devel` repo** — assumed AppStream alongside the loader (loader runtime + headers are VERIFIED AppStream). → `dnf info vulkan-loader-devel`.
 4. **`powertools` repo id** — expected `powertools` on AlmaLinux 8. → `dnf repolist`; fall back to writing `almalinux-powertools.repo` if the id differs.
 5. **`llvm-toolset` default stream** — expected 17.0.6 on 8.10. → `dnf module list llvm-toolset`; pin an explicit stream for reproducibility if the default drifts.
-6. **`ruby` stream** — default 2.5 vs available 3.0/3.1/3.3; bullseye is 2.7 (no exact EL8 match). → decide/pin the stream (see Open Questions) and `dnf module enable ruby:<stream>` if not accepting the default.
+6. **`ruby` stream** — default 2.5 vs available 3.0/3.1/3.3; bullseye is 2.7 (no exact EL8 match). → ✅ RESOLVED: pin `ruby:3.1` (`dnf module enable ruby:3.1 -y` before the install layer). Assert at build time with `ruby --version` (expect 3.1.x).
 7. **`epel-release` strict necessity** — research says optional for this package set, but BASE-02 lists it. → keep it (harmless, satisfies BASE-02); if a package unexpectedly resolves only from EPEL, record that in a comment.
 8. **`gnome-keyring` + `vulkan-headers` aarch64 availability** — Repology confirms x86_64; aarch64 is exercised in Phase 4, but the amd64 build is the Phase 1 gate. → note that Phase 4 must re-verify on arm64.
 9. **Image size** — after `dnf clean all`, confirm the image is comparable to `debian-bullseye` (success criterion 4). → `docker images` size check.
@@ -321,18 +321,20 @@ Every item below **cannot** be resolved from local files or Repology and must be
 
 ## Open Questions
 
-1. **Which `ruby` module stream to pin?**
+> **Resolution note (2026-09-08):** All three open questions are RESOLVED and locked in the plan (`01-02-PLAN.md`). Phase 1 proceeds with the resolved choices below; Phase 3 (parity) may revisit the Ruby stream against real builds.
+
+1. **Which `ruby` module stream to pin?** — ✅ RESOLVED: pin `ruby:3.1`.
    - What we know: bullseye ships Ruby 2.7; EL8 has default 2.5 with 3.0/3.1/3.3 available (2.7 has no EL8 stream). Ruby 2.5/2.7 are EOL.
    - What's unclear: whether the consuming builds depend on 2.7 semantics, or any modern 3.x works.
-   - Recommendation: do **not** accept the silent default 2.5 (EOL, oldest). Pin `ruby:3.1` (or `3.3` per AlmaLinux 8.10 release notes) explicitly in Phase 1, and let Phase 3 (parity) confirm the choice against real builds. Surface to the user at plan time.
+   - **Decision:** do **not** accept the silent default 2.5 (EOL, oldest). Pin `ruby:3.1` explicitly in Phase 1 via `dnf module enable ruby:3.1 -y` BEFORE the install layer; Phase 3 (parity) confirms the choice against real builds.
 
-2. **Should `epel-release` stay in the recipe given research says it's optional?**
+2. **Should `epel-release` stay in the recipe given research says it's optional?** — ✅ RESOLVED: keep `epel-release`.
    - What we know: BASE-02 and the phase scope list it; research shows Vulkan is AppStream so EPEL is not strictly needed.
-   - Recommendation: keep it (satisfies BASE-02 literally, harmless, documented fallback), but install all packages from native repos without `--enablerepo=epel`. Flag for user confirmation only if image size/attack-surface is a concern.
+   - **Decision:** keep it (satisfies BASE-02 literally, harmless, documented fallback); install all packages from native repos without `--enablerepo=epel`.
 
-3. **`dbus-x11` (`dbus-launch`) — needed?**
+3. **`dbus-x11` (`dbus-launch`) — needed?** — ✅ RESOLVED: skip `dbus-x11`.
    - What we know: bullseye's `dbus` package provides `dbus-launch`; on EL8 it's a separate `dbus-x11` package. PITFALLS says only add if `dbus-launch` is actually used.
-   - Recommendation: install `dbus dbus-daemon dbus-tools` only; add `dbus-x11` later if a Phase 3 keyring smoke test requires `dbus-launch`.
+   - **Decision:** install `dbus dbus-daemon dbus-tools` only; add `dbus-x11` later only if a Phase 3 keyring smoke test requires `dbus-launch`.
 
 ## Environment Availability
 
