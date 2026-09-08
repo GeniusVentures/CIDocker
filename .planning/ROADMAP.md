@@ -34,12 +34,12 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
   3. The full mapped EL8 package list installs in one dnf transaction — `sudo`, `pkgconf-pkg-config`, `git`, `ruby`+`ruby-devel`, `clang` (via `llvm-toolset` module), `cmake`, `gh`, `wget`, `curl`, `libcurl-devel`, `libsecret-devel`, `dbus`+`dbus-daemon`+`dbus-tools`, `gnome-keyring`, `ninja-build`, `vulkan-loader`+`vulkan-loader-devel`+`vulkan-headers`, `gtk3-devel`, `jq`, `libatomic`, plus `gcc`/`gcc-c++`/`make`/`binutils`.
   4. `docker build` completes with `dnf clean all`, leaving no dnf package cache and a lean image comparable in size to `debian-bullseye`.
 
-**Plans**: 2 plans
+**Plans**: 1/2 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Walking skeleton: base + ENV + ordered repos + thin package slice, SKELETON.md contract
+- [x] 01-01-PLAN.md — Walking skeleton: base + ENV + ordered repos + thin package slice, SKELETON.md contract
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -98,7 +98,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Base & Package Install | 0/2 | Planned | - |
+| 1. Base & Package Install | 1/2 | In Progress|  |
 | 2. Toolchain Install | 0/TBD | Not started | - |
 | 3. Parity & Verification | 0/TBD | Not started | - |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |

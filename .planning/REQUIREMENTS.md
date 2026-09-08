@@ -9,8 +9,8 @@ Requirements for the AlmaLinux 8 image. Each maps to roadmap phases.
 
 ### Base & Repos
 
-- [ ] **BASE-01**: Image is based on `almalinux:8` (glibc 2.28)
-- [ ] **BASE-02**: dnf repositories are enabled in order — `dnf-plugins-core`, `epel-release`, PowerTools/CRB, GitHub CLI repo, NodeSource
+- [x] **BASE-01**: Image is based on `almalinux:8` (glibc 2.28)
+- [x] **BASE-02**: dnf repositories are enabled in order — `dnf-plugins-core`, `epel-release`, PowerTools/CRB, GitHub CLI repo, NodeSource
 - [ ] **BASE-03**: Image builds for `amd64` and `arm64` only (no `armhf`/`i386`)
 
 ### System Packages
@@ -58,8 +58,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BASE-01 | Phase 1 | Pending |
-| BASE-02 | Phase 1 | Pending |
+| BASE-01 | Phase 1 | Complete |
+| BASE-02 | Phase 1 | Complete |
 | BASE-03 | Phase 4 | Pending |
 | PKG-01 | Phase 1 | Pending |
 | PKG-02 | Phase 2 | Pending |
@@ -73,6 +73,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAR-03 | Phase 4 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 13 total
 - Mapped to phases: 13
 - Unmapped: 0 ✓
