@@ -58,24 +58,24 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BASE-01 | — | Pending |
-| BASE-02 | — | Pending |
-| BASE-03 | — | Pending |
-| PKG-01 | — | Pending |
-| PKG-02 | — | Pending |
-| TOOL-01 | — | Pending |
-| TOOL-02 | — | Pending |
-| TOOL-03 | — | Pending |
-| TOOL-04 | — | Pending |
-| TOOL-05 | — | Pending |
-| PAR-01 | — | Pending |
-| PAR-02 | — | Pending |
-| PAR-03 | — | Pending |
+| BASE-01 | Phase 1 | Pending |
+| BASE-02 | Phase 1 | Pending |
+| BASE-03 | Phase 4 | Pending |
+| PKG-01 | Phase 1 | Pending |
+| PKG-02 | Phase 2 | Pending |
+| TOOL-01 | Phase 2 | Pending |
+| TOOL-02 | Phase 2 | Pending |
+| TOOL-03 | Phase 2 | Pending |
+| TOOL-04 | Phase 2 | Pending |
+| TOOL-05 | Phase 2 | Pending |
+| PAR-01 | Phase 3 | Pending |
+| PAR-02 | Phase 3 | Pending |
+| PAR-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 13 total
-- Mapped to phases: 0
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-09-08*
