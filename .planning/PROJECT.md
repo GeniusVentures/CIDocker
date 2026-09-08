@@ -13,13 +13,14 @@ A maintained, security-supported CI base image that reproduces the existing buil
 ### Validated
 
 - ✓ `debian-bullseye/` image — existing; provides Rust 1.87, Node 24, Temurin JDK 25, mold, and GTK/Vulkan toolchain (built on bullseye)
+- ✓ `almalinux-8/` image (Phase 1) — builds on `almalinux:8` (glibc 2.28) with the ordered dnf repo set and the full PKG-01 EL8 package list, verified in-image (`ldd --version` → 2.28, `dnf repolist`, `pkg-config --exists vulkan/gtk3/libsecret`)
 
 ### Active
 
-- [ ] New `almalinux-8/` image that reproduces the `debian-bullseye` toolchain on AlmaLinux 8
+- [ ] New `almalinux-8/` image that reproduces the `debian-bullseye` toolchain on AlmaLinux 8 — **Phase 1 (base + packages) complete**; toolchain install (Phase 2), parity (Phase 3), multi-arch (Phase 4) pending
 - [ ] Same toolchain parity: Rust 1.87.0, Node 24, Temurin JDK 25, mold, clang, cmake, pkg-config, git, gh, wget, curl, ruby, libsecret, dbus, gnome-keyring, ninja-build, Vulkan, GTK3, jq, libatomic
 - [ ] Multi-arch support for `amd64` and `arm64`
-- [ ] glibc 2.28 (older than bullseye's 2.31) for broad binary compatibility
+- [x] glibc 2.28 (older than bullseye's 2.31) for broad binary compatibility — validated in Phase 1
 - [ ] Builds produce the same artifacts as the bullseye image
 
 ### Out of Scope
@@ -53,10 +54,10 @@ A maintained, security-supported CI base image that reproduces the existing buil
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| AlmaLinux 8 (RHEL 8 rebuild) | Older glibc 2.28 for broad binary compatibility; Alma preferred over Rocky | — Pending |
-| `amd64` + `arm64` only | RHEL clones ship only these; JDK already excluded 32-bit targets | — Pending |
-| Keep `debian-bullseye` alongside | Grace period until the new image is verified in CI | — Pending |
-| glibc 2.28 over 2.34 | Trade 2029 EOL for wider runtime compatibility | ⚠️ Revisit |
+| AlmaLinux 8 (RHEL 8 rebuild) | Older glibc 2.28 for broad binary compatibility; Alma preferred over Rocky | Validated in Phase 1 — image builds on `almalinux:8` |
+| `amd64` + `arm64` only | RHEL clones ship only these; JDK already excluded 32-bit targets | — Pending (Phase 4) |
+| Keep `debian-bullseye` alongside | Grace period until the new image is verified in CI | — Pending (grace period) |
+| glibc 2.28 over 2.34 | Trade 2029 EOL for wider runtime compatibility | Validated in Phase 1 — `ldd --version` → 2.28 |
 
 ## Evolution
 
@@ -76,4 +77,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-08 after initialization*
+*Last updated: 2026-09-08 — Phase 1 (Base & Package Install) complete*
