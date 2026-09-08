@@ -81,3 +81,23 @@ dnf install -y \
 && rm -rf /var/cache/dnf
 
 EOF
+
+# 9) In-image verification chain — fails the build if any package is missing or
+#    unresolved. The final three probes are non-fatal diagnostics for the unresolved
+#    repo placements from the research checklist (report only, do not hard-fail).
+RUN <<EOF
+
+set -eux
+
+pkg-config --version && gcc --version | head -1 && clang --version | head -1 \
+  && cmake --version | head -1 && ninja --version && git --version \
+  && gh --version && ruby --version && wget --version | head -1 \
+  && curl --version | head -1 && jq --version && ld --version | head -1 \
+  && pkg-config --exists vulkan && pkg-config --exists gtk+-3.0 \
+  && pkg-config --exists libsecret-1 && rpm -q libatomic
+
+dnf info libsecret-devel | grep -E '^Repo' || true
+dnf info libcurl-devel | grep -E '^Repo' || true
+dnf info vulkan-loader-devel | grep -E '^Repo' || true
+
+EOF
