@@ -13,7 +13,11 @@ RUN <<EOF
 
 set -eux
 
-dnf install -y dnf-plugins-core wget curl tar gzip xz ca-certificates chkconfig && dnf clean all
+# `which` restores debianutils parity: CI scripts across the GNUS repos invoke
+# `$(which clang)` for update-alternatives; the minimal EL8 image omits it.
+# perl + perl-IPC-Cmd are required by OpenSSL's Configure script (Debian ships
+# IPC::Cmd in core perl; EL8 splits it into a subpackage).
+dnf install -y dnf-plugins-core wget curl tar gzip xz ca-certificates chkconfig which perl perl-IPC-Cmd && dnf clean all
 
 EOF
 
@@ -95,6 +99,12 @@ pkg-config --version && gcc --version | head -1 && clang --version | head -1 \
   && curl --version | head -1 && jq --version && ld --version | head -1 \
   && pkg-config --exists vulkan && pkg-config --exists gtk+-3.0 \
   && pkg-config --exists libsecret-1 && rpm -q libatomic
+
+# `which` and perl IPC::Cmd are load-bearing for downstream CI: GNUS repo
+# workflows call `$(which clang)` for update-alternatives, and OpenSSL's
+# Configure (built from source in thirdparty) requires IPC::Cmd.
+command -v which && which clang && which perl
+perl -MIPC::Cmd -e 'print "IPC::Cmd OK\n"'
 
 dnf info libsecret-devel | grep -E '^Repo' || true
 dnf info libcurl-devel | grep -E '^Repo' || true
