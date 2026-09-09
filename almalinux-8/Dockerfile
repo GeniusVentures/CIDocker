@@ -205,9 +205,11 @@ ENV JAVA_HOME=/usr/lib/jvm/temurin-25-jdk \
 
 RUN git config --system --add safe.directory '*'
 
+# machine-id seed: on EL8 /var/lib/dbus/machine-id is a SYMLINK to /etc/machine-id
+# (systemd convention, present in the base image), so seeding /etc/machine-id is
+# sufficient — the bullseye `cp` would be a self-copy error (same inode on EL8).
 RUN mkdir -p /var/lib/dbus && \
-    cat /proc/sys/kernel/random/uuid | tr -d '-' > /var/lib/dbus/machine-id && \
-    cp /var/lib/dbus/machine-id /etc/machine-id
+    cat /proc/sys/kernel/random/uuid | tr -d '-' > /etc/machine-id
 
 # 10) Phase 2 verification chain — fails the build if any success criterion is unmet.
 RUN <<EOF
