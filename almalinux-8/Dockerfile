@@ -194,3 +194,34 @@ echo "export JAVA_INCLUDE_PATH2=\$JAVA_HOME/include/linux" >> /etc/profile.d/jav
 echo "export JAVA_AWT_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh;
 
 EOF
+
+ENV JAVA_HOME=/usr/lib/jvm/temurin-25-jdk \
+    JAVA_INCLUDE_PATH=/usr/lib/jvm/temurin-25-jdk/include \
+    JAVA_INCLUDE_PATH2=/usr/lib/jvm/temurin-25-jdk/include/linux \
+    JAVA_AWT_INCLUDE_PATH=/usr/lib/jvm/temurin-25-jdk/include \
+    JAVA_JVM_LIBRARY=/usr/lib/jvm/temurin-25-jdk/lib/server/libjvm.so \
+    JDK_HOME=/usr/lib/jvm/temurin-25-jdk \
+    PATH=/usr/lib/jvm/temurin-25-jdk/bin:/usr/local/cargo/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+RUN git config --system --add safe.directory '*'
+
+RUN mkdir -p /var/lib/dbus && \
+    cat /proc/sys/kernel/random/uuid | tr -d '-' > /var/lib/dbus/machine-id && \
+    cp /var/lib/dbus/machine-id /etc/machine-id
+
+# 10) Phase 2 verification chain — fails the build if any success criterion is unmet.
+RUN <<EOF
+
+set -eux
+
+ld --version | grep -q 'mold 2.42.0'
+node --version | grep -q '^v24\.'
+node -e 'process.exit(0)'
+rustc --version | grep -q '1.87.0'
+java -version 2>&1 | grep -q 'Temurin-25'
+test "$(git config --system --get safe.directory)" = '*'
+test -s /var/lib/dbus/machine-id
+cmp -s /var/lib/dbus/machine-id /etc/machine-id
+echo "JAVA_HOME=$JAVA_HOME JDK_HOME=$JDK_HOME RUSTUP_HOME=$RUSTUP_HOME CARGO_HOME=$CARGO_HOME"
+
+EOF
