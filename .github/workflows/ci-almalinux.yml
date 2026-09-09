@@ -45,3 +45,36 @@ jobs:
           platforms: linux/amd64, linux/arm64
           push: true
           tags: ghcr.io/geniusventures/almalinux-8:latest
+
+      - name: Verify multi-arch manifest (PAR-03)
+        run: |
+          docker buildx imagetools inspect --raw ghcr.io/geniusventures/almalinux-8:latest > /tmp/manifest.json
+          grep -q '"architecture":"amd64"' /tmp/manifest.json
+          grep -q '"architecture":"arm64"' /tmp/manifest.json
+
+      - name: Pull-by-tag resolution (amd64 + arm64)
+        run: |
+          docker pull ghcr.io/geniusventures/almalinux-8:latest
+          test "$(docker inspect --format '{{.Architecture}}' ghcr.io/geniusventures/almalinux-8:latest)" = amd64
+          docker pull --platform linux/arm64 ghcr.io/geniusventures/almalinux-8:latest
+          test "$(docker inspect --format '{{.Architecture}}' ghcr.io/geniusventures/almalinux-8:latest)" = arm64
+
+      - name: arm64 run smoke test (full probe set)
+        run: |
+          docker run --rm --platform linux/arm64 ghcr.io/geniusventures/almalinux-8:latest bash -ec '
+            set -eux
+            test "$(uname -m)" = aarch64
+            rustc --version | grep -q 1.87.0
+            node --version | grep -qE "^v24\."
+            node -e "process.exit(0)"
+            java -version 2>&1 | grep -q Temurin-25
+            ld --version | grep -q "mold 2.42.0"
+            clang --version | head -1
+            cmake --version | head -1
+            gh --version
+            pkg-config --version
+            pkg-config --exists vulkan
+            pkg-config --exists gtk+-3.0
+            pkg-config --exists libsecret-1
+            rpm -q gnome-keyring vulkan-headers
+          '
