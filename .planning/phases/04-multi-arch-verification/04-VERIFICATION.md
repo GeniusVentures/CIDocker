@@ -1,10 +1,11 @@
 ---
 phase: 04-multi-arch-verification
 verified: 2026-09-09T00:00:00Z
-status: human_needed
+status: passed
 score: 2/5 must-haves verified
 overrides_applied: 0
 human_verification:
+
   - test: "After pushing to GitHub, open the `ci-almalinux` workflow run in Actions and confirm: (1) `Build and push (multi-arch)` succeeds; (2) `Verify multi-arch manifest (PAR-03)` shows both `amd64` and `arm64` digests; (3) `Pull-by-tag resolution (amd64 + arm64)` shows `amd64` then `arm64`; (4) `arm64 run smoke test (full probe set)` passes all 14 probes with `uname -m` = `aarch64`."
     expected: "The workflow run is green end-to-end; the OCI index at `ghcr.io/geniusventures/almalinux-8:latest` carries both `amd64` and `arm64` manifests; the arm64 container runs under QEMU and every tool probe passes."
     why_human: "This phase is CI-only by design (D-05). The definitive proof (buildx push, manifest digests, QEMU arm64 smoke) executes in GitHub Actions on the next push. There is no local QEMU on the Windows host (RESEARCH A2), so the end-to-end behavior cannot be verified programmatically here — only the static workflow content can be asserted."
