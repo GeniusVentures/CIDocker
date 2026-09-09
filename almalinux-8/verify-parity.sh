@@ -71,9 +71,13 @@ main() {
     local img="$1"
     docker run --rm -v "$SCRIPT_DIR/fixture:/src:ro" -w /src "$img" bash -eu -c '
       ld --version | grep -q mold || { echo "FAIL: mold not default ld" >&2; exit 1; }
+      # Copy fixture to a writable dir — cargo writes Cargo.lock next to the manifest,
+      # and /src is mounted read-only (Pitfall 4).
+      cp -r /src /tmp/src
+      cd /tmp/src
       # C++ — clang + mold via the default-ld shim (plain clang++; bullseye clang 11 has no mold linker flag)
       clang++ -std=c++17 -O2 cpp/main.cpp -o /tmp/cpp_main && /tmp/cpp_main
-      # Rust — std-only crate; target dir in /tmp (read-only mount, Pitfall 4)
+      # Rust — std-only crate; target dir in /tmp
       ( cd rust && CARGO_TARGET_DIR=/tmp/cargo_target cargo run --quiet --release )
       # Node probe (nice-to-have, D-05)
       node -e "console.log(\"node-ok\")"
@@ -110,7 +114,7 @@ JAVA
   echo "==> clang drift (D-08) — documented accept-risk, no active diffing"
   matrix "$BULLSEYE_IMAGE" | grep '^clang='
   matrix "$ALMA_IMAGE"   | grep '^clang='
-  echo "NOTE: clang 11 -> 17 is documented, accepted drift (D-08)."
+  echo "NOTE: clang major-version drift (bullseye 11.x -> EL8 llvm-toolset) is documented, accepted drift (D-08)."
 
   echo "==> GTK gap (PAR-02) — version + compile probe"
   matrix "$BULLSEYE_IMAGE" | grep '^gtk='
