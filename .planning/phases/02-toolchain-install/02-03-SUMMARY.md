@@ -47,20 +47,20 @@ coverage:
     description: "Runtime glue: git safe.directory '*' + identical seeded machine-id"
     requirement: "PKG-02"
     verification:
-      - kind: manual_procedural
-        ref: "grep: RUN git config --system --add safe.directory '*', mkdir -p /var/lib/dbus, cat /proc/sys/kernel/random/uuid, cp machine-id"
+      - kind: automated
+        ref: "docker run --rm cidocker-almalinux-8:phase2 git config --system --get safe.directory -> '*'; sh -c 'cmp -s /var/lib/dbus/machine-id /etc/machine-id && echo identical' -> identical"
         status: pass
-    human_judgment: true
-    rationale: "Static criteria pass. Runtime proof (safe.directory returns *, cmp machine-id identical) deferred to the consolidated build."
+    human_judgment: false
+    rationale: "Runtime proof confirmed. DEVIATION: on EL8 /var/lib/dbus/machine-id is a symlink to /etc/machine-id, so the bullseye cp is a self-copy error — seed /etc/machine-id directly instead."
   - id: D3
     description: "Verification chain asserts all five Phase 2 success criteria"
     requirement: "TOOL-01..TOOL-05, PKG-02"
     verification:
       - kind: automated
-        ref: "docker build -t cidocker-almalinux-8:phase2 -f almalinux-8/Dockerfile ."
-        status: pending
+        ref: "docker build -t cidocker-almalinux-8:phase2 -f almalinux-8/Dockerfile . -> exits 0, all probes pass"
+        status: pass
     human_judgment: false
-    rationale: "Full docker build runs after all three plans' layers are appended; result recorded in the final phase verification."
+    rationale: "Full build succeeded; verification chain (ld->mold 2.42.0, node->v24.x, rustc->1.87.0, java->Temurin-25, safe.directory->*, machine-id identical) all green."
 
 duration: 10min
 completed: 2026-09-08
@@ -78,17 +78,18 @@ status: complete
 
 ## Accomplishments
 - **Final ENV (TOOL-05):** bare `ENV` directive mirroring bullseye byte-for-byte — `JAVA_HOME`, `JAVA_INCLUDE_PATH{,2}`, `JAVA_AWT_INCLUDE_PATH`, `JAVA_JVM_LIBRARY`, `JDK_HOME`, and the literal `PATH` (no `:$PATH` append). Top `ENV` block untouched.
-- **Runtime glue (PKG-02):** `RUN git config --system --add safe.directory '*'` and `RUN mkdir -p /var/lib/dbus && cat /proc/sys/kernel/random/uuid | tr -d '-' > /var/lib/dbus/machine-id && cp /var/lib/dbus/machine-id /etc/machine-id`.
+- **Runtime glue (PKG-02):** `RUN git config --system --add safe.directory '*'` and `RUN mkdir -p /var/lib/dbus && cat /proc/sys/kernel/random/uuid | tr -d '-' > /etc/machine-id` (EL8-adapted — see Deviations).
 - **Verification chain:** fail-fast heredoc asserting all five success criteria (`ld`→mold 2.42.0, `node`→v24.x, `rustc`→1.87.0, `java`→Temurin-25, `git safe.directory`→`*`, machine-id seeded + identical, env echo).
 
 ## Task Commits
 
 1. **Task 1 + 2 + 3 (ENV + glue + verification chain)** - `3630a84` (feat)
+2. **Fix: machine-id EL8 symlink** - `c869beb` (fix)
 
 ## Deviations
 
-- None — all layers appended byte-for-byte per the research recipe. Docker-daemon-dependent acceptance criteria verified in the consolidated end-to-end build run.
+- **machine-id glue (PKG-02):** the plan's verbatim bullseye recipe (`cat ... > /var/lib/dbus/machine-id && cp /var/lib/dbus/machine-id /etc/machine-id`) FAILS on EL8 — the `almalinux:8` base ships `/var/lib/dbus/machine-id` as a **symlink to `/etc/machine-id`** (systemd convention), so `cp` is a self-copy error (`cp: '/var/lib/dbus/machine-id' and '/etc/machine-id' are the same file`). Fixed by seeding `/etc/machine-id` directly (the symlink keeps both paths identical automatically). Success criterion (both seeded + identical) still fully satisfied. This is a research gap in `02-RESEARCH.md` §6 — recorded for Phase 3 parity review.
 
 ## Self-Check: PASSED
 
-All static acceptance criteria pass; the full `docker build` gate is exercised once at the end of phase execution (single build validates all layers + the verification chain).
+`docker build -t cidocker-almalinux-8:phase2` exits 0; verification chain and explicit `docker run` probes confirm: mold 2.42.0, Node v24.20.0, rustc 1.87.0, Temurin 25.0.2, safe.directory `*`, machine-id identical, env contract literal PATH.
