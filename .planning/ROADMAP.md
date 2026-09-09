@@ -87,7 +87,16 @@ Plans:
   3. The GTK 3.22 (EL8) vs 3.24 (bullseye) gap is confirmed non-blocking — the consuming projects' GTK API usage compiles against EL8 `gtk3-devel`.
   4. Clang 11→17 drift and Ruby stream differences are verified not to change build behavior or outputs.
 
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 03-01-PLAN.md — Minimal in-repo fixture: C++ (clang+mold), std-only Rust crate, GTK compile probe
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 03-02-PLAN.md — `verify-parity.sh` harness: version matrix, behavioral fixture diff, GTK/clang/Ruby drift evidence
 
 ### Phase 4: Multi-arch Verification
 
@@ -113,5 +122,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Base & Package Install | 2/2 | Complete    | 2026-09-08 |
 | 2. Toolchain Install | 3/3 | Complete    | 2026-09-09 |
-| 3. Parity & Verification | 0/TBD | Not started | - |
+| 3. Parity & Verification | 0/2 | Not started | - |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |
