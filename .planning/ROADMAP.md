@@ -16,7 +16,7 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
 
 - [x] **Phase 1: Base & Package Install** - `almalinux:8` base, ordered dnf repo enablement, full EL8 package set (completed 2026-09-08)
 - [x] **Phase 2: Toolchain Install** - mold, Node 24, Rust 1.87.0, Temurin JDK 25, env contract, runtime glue (completed 2026-09-09)
-- [ ] **Phase 3: Parity & Verification** - toolchain/behavioral parity vs `debian-bullseye`, GTK gap audit
+- [x] **Phase 3: Parity & Verification** - toolchain/behavioral parity vs `debian-bullseye`, GTK gap audit (completed 2026-09-09)
 - [ ] **Phase 4: Multi-arch Verification** - `amd64` + `arm64` buildx sign-off, 32-bit exclusion
 
 ## Phase Details
@@ -87,16 +87,16 @@ Plans:
   3. The GTK 3.22 (EL8) vs 3.24 (bullseye) gap is confirmed non-blocking — the consuming projects' GTK API usage compiles against EL8 `gtk3-devel`.
   4. Clang 11→17 drift and Ruby stream differences are verified not to change build behavior or outputs.
 
-**Plans**: 2 plans
+**Plans**: 2/2 plans complete
 
 Plans:
 **Wave 1**
 
-- [ ] 03-01-PLAN.md — Minimal in-repo fixture: C++ (clang+mold), std-only Rust crate, GTK compile probe
+- [x] 03-01-PLAN.md — Minimal in-repo fixture: C++ (clang+mold), std-only Rust crate, GTK compile probe
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 03-02-PLAN.md — `verify-parity.sh` harness: version matrix, behavioral fixture diff, GTK/clang/Ruby drift evidence
+- [x] 03-02-PLAN.md — `verify-parity.sh` harness: version matrix, behavioral fixture diff, GTK/clang/Ruby drift evidence
 
 ### Phase 4: Multi-arch Verification
 
@@ -122,5 +122,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Base & Package Install | 2/2 | Complete    | 2026-09-08 |
 | 2. Toolchain Install | 3/3 | Complete    | 2026-09-09 |
-| 3. Parity & Verification | 0/2 | Not started | - |
+| 3. Parity & Verification | 2/2 | Complete   | 2026-09-09 |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |
