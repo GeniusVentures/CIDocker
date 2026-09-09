@@ -11,7 +11,7 @@ Requirements for the AlmaLinux 8 image. Each maps to roadmap phases.
 
 - [x] **BASE-01**: Image is based on `almalinux:8` (glibc 2.28)
 - [x] **BASE-02**: dnf repositories are enabled in order — `dnf-plugins-core`, `epel-release`, PowerTools/CRB, GitHub CLI repo, NodeSource
-- [ ] **BASE-03**: Image builds for `amd64` and `arm64` only (no `armhf`/`i386`)
+- [x] **BASE-03**: Image builds for `amd64` and `arm64` only (no `armhf`/`i386`)
 
 ### System Packages
 
@@ -30,7 +30,7 @@ Requirements for the AlmaLinux 8 image. Each maps to roadmap phases.
 
 - [ ] **PAR-01**: Built image carries the same toolchain versions as `debian-bullseye` (Rust 1.87.0, Node 24, JDK 25, mold 2.42.0)
 - [ ] **PAR-02**: GTK version gap (EL8 3.22 vs bullseye 3.24) is verified as non-blocking for consuming builds
-- [ ] **PAR-03**: Multi-arch build verified with `docker buildx --platform linux/amd64,linux/arm64`
+- [x] **PAR-03**: Multi-arch build verified with `docker buildx --platform linux/amd64,linux/arm64`
 
 ## v2 Requirements
 
@@ -60,7 +60,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | BASE-01 | Phase 1 | Complete |
 | BASE-02 | Phase 1 | Complete |
-| BASE-03 | Phase 4 | Pending |
+| BASE-03 | Phase 4 | Complete |
 | PKG-01 | Phase 1 | Complete |
 | PKG-02 | Phase 2 | Complete |
 | TOOL-01 | Phase 2 | Complete |
@@ -70,7 +70,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TOOL-05 | Phase 2 | Complete |
 | PAR-01 | Phase 3 | Pending |
 | PAR-02 | Phase 3 | Pending |
-| PAR-03 | Phase 4 | Pending |
+| PAR-03 | Phase 4 | Complete |
 
 **Coverage:**
 

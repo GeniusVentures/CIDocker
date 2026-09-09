@@ -17,7 +17,7 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
 - [x] **Phase 1: Base & Package Install** - `almalinux:8` base, ordered dnf repo enablement, full EL8 package set (completed 2026-09-08)
 - [x] **Phase 2: Toolchain Install** - mold, Node 24, Rust 1.87.0, Temurin JDK 25, env contract, runtime glue (completed 2026-09-09)
 - [x] **Phase 3: Parity & Verification** - toolchain/behavioral parity vs `debian-bullseye`, GTK gap audit (completed 2026-09-09)
-- [ ] **Phase 4: Multi-arch Verification** - `amd64` + `arm64` buildx sign-off, 32-bit exclusion
+- [x] **Phase 4: Multi-arch Verification** - `amd64` + `arm64` buildx sign-off, 32-bit exclusion (completed 2026-09-09)
 
 ## Phase Details
 
@@ -111,12 +111,12 @@ Plans:
   3. A run smoke test of every tool passes on `arm64` (`gnome-keyring`, `vulkan-headers`, `gh` all resolve on aarch64).
   4. CI pulls the multi-arch image by tag; `amd64` and `arm64` pulls resolve to the correct architecture.
 
-**Plans**: 1 plan
+**Plans**: 1/1 plans complete
 
 Plans:
 **Wave 1**
 
-- [ ] 04-01-PLAN.md — Separate `ci-almalinux.yml` workflow: arch-clean gate + multi-arch build/push + manifest inspection + pull-by-tag + arm64 QEMU smoke
+- [x] 04-01-PLAN.md — Separate `ci-almalinux.yml` workflow: arch-clean gate + multi-arch build/push + manifest inspection + pull-by-tag + arm64 QEMU smoke
 
 ## Progress
 
@@ -128,4 +128,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Base & Package Install | 2/2 | Complete    | 2026-09-08 |
 | 2. Toolchain Install | 3/3 | Complete    | 2026-09-09 |
 | 3. Parity & Verification | 2/2 | Complete   | 2026-09-09 |
-| 4. Multi-arch Verification | 0/TBD | Not started | - |
+| 4. Multi-arch Verification | 1/1 | Complete   | 2026-09-09 |
