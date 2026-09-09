@@ -111,7 +111,12 @@ Plans:
   3. A run smoke test of every tool passes on `arm64` (`gnome-keyring`, `vulkan-headers`, `gh` all resolve on aarch64).
   4. CI pulls the multi-arch image by tag; `amd64` and `arm64` pulls resolve to the correct architecture.
 
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+**Wave 1**
+
+- [ ] 04-01-PLAN.md — Separate `ci-almalinux.yml` workflow: arch-clean gate + multi-arch build/push + manifest inspection + pull-by-tag + arm64 QEMU smoke
 
 ## Progress
 
