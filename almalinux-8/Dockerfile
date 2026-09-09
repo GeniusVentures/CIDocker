@@ -138,3 +138,59 @@ node --version
 node -e 'process.exit(0)'
 
 EOF
+
+# Rust via SHA256-pinned rustup (parity with bullseye). amd64 + arm64 only (BASE-03);
+# the armhf/i386 branches are deleted. RUST_VERSION/RUSTUP_HOME/CARGO_HOME come from
+# the top ENV block.
+RUN <<EOF
+
+set -eux
+
+case "$(uname -m)" in \
+    x86_64) rustArch='x86_64-unknown-linux-gnu'; rustupSha256='20a06e644b0d9bd2fbdbfd52d42540bdde820ea7df86e92e533c073da0cdd43c' ;; \
+    aarch64) rustArch='aarch64-unknown-linux-gnu'; rustupSha256='e3853c5a252fca15252d07cb23a1bdd9377a8c6f3efa01531109281ae47f841c' ;; \
+    *) echo >&2 "unsupported architecture: $(uname -m)"; exit 1 ;; \
+esac; \
+
+url="https://static.rust-lang.org/rustup/archive/1.28.2/${rustArch}/rustup-init"; \
+wget "$url"; \
+echo "${rustupSha256} *rustup-init" | sha256sum -c -; \
+chmod +x rustup-init; \
+./rustup-init -y --no-modify-path --profile minimal --default-toolchain $RUST_VERSION --default-host ${rustArch}; \
+rm rustup-init; \
+chmod -R a+w $RUSTUP_HOME $CARGO_HOME;
+
+EOF
+
+# Temurin JDK 25 via Adoptium tarball (parity). x64/aarch64 only; the armhf/i386
+# error branches are deleted. The extracted top-level dir is discovered dynamically
+# (it is jdk-25.0.2+10) — do not hardcode it.
+RUN <<EOF
+
+set -eux
+
+case "$(uname -m)" in \
+    x86_64) jdkArch='x64'; javaDir='amd64' ;; \
+    aarch64) jdkArch='aarch64'; javaDir='arm64' ;; \
+    *) echo >&2 "unsupported architecture: $(uname -m)"; exit 1 ;; \
+esac; \
+
+mkdir -p /usr/lib/jvm; \
+cd /tmp; \
+jdkReleaseTag="jdk-25.0.2+10"; \
+jdkArchive="OpenJDK25U-jdk_${jdkArch}_linux_hotspot_25.0.2_10.tar.gz"; \
+wget -q "https://github.com/adoptium/temurin25-binaries/releases/download/${jdkReleaseTag}/${jdkArchive}"; \
+extractedDir="$(tar -tzf "${jdkArchive}" | head -1 | cut -d/ -f1)"; \
+test -n "${extractedDir}"; \
+tar -xzf "${jdkArchive}" -C /usr/lib/jvm; \
+mv "/usr/lib/jvm/${extractedDir}" "/usr/lib/jvm/temurin-25-jdk-${javaDir}"; \
+ln -sfn /usr/lib/jvm/temurin-25-jdk-${javaDir} /usr/lib/jvm/temurin-25-jdk; \
+rm "${jdkArchive}"; \
+
+javaHome="/usr/lib/jvm/temurin-25-jdk"; \
+echo "export JAVA_HOME=${javaHome}" >> /etc/profile.d/java-env.sh; \
+echo "export JAVA_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh; \
+echo "export JAVA_INCLUDE_PATH2=\$JAVA_HOME/include/linux" >> /etc/profile.d/java-env.sh; \
+echo "export JAVA_AWT_INCLUDE_PATH=\$JAVA_HOME/include" >> /etc/profile.d/java-env.sh;
+
+EOF
