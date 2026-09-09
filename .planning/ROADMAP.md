@@ -59,7 +59,20 @@ Plans:
   4. `java -version` reports Temurin JDK 25; `JAVA_HOME`, `JDK_HOME`, `RUSTUP_HOME`, `CARGO_HOME`, and `PATH` match the bullseye env contract.
   5. `git config --system --get safe.directory` returns `*`, and `/var/lib/dbus/machine-id` + `/etc/machine-id` are seeded and identical.
 
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+**Wave 1**
+
+- [ ] 02-01-PLAN.md — mold 2.42.0 + update-alternatives ld shim, Node 24 (TOOL-01, TOOL-02)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
+- [ ] 02-02-PLAN.md — Rust 1.87.0 via SHA256-pinned rustup, Temurin JDK 25 (TOOL-03, TOOL-04)
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
+- [ ] 02-03-PLAN.md — ENV contract, runtime glue, Phase 2 verification chain (TOOL-05, PKG-02)
 
 ### Phase 3: Parity & Verification
 
@@ -99,6 +112,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Base & Package Install | 2/2 | Complete    | 2026-09-08 |
-| 2. Toolchain Install | 0/TBD | Not started | - |
+| 2. Toolchain Install | 0/3 | Not started | - |
 | 3. Parity & Verification | 0/TBD | Not started | - |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |
