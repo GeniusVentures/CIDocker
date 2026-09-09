@@ -419,17 +419,19 @@ Get-ChildItem W:\gnus\GeniusNetwork -Recurse -File -Include *.h,*.hpp,*.cpp,*.cc
 | A3 | bullseye drift patch levels are clang 11.x, ruby 2.7.x, gtk 3.24.x | Standard Stack / GTK Gap | These are only *reported* (not gated); if a patch differs it changes the drift record, not any pass/fail outcome. |
 | A4 | `gtk_get_major_version` is exported and display-free in both gtk3 versions | Code Examples | If the symbol were absent, the compile probe would fail — but `pkg-config --exists gtk+-3.0` + `--modversion` still prove headers/libs resolve; drop the run step and keep compile-only. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Pull the frozen bullseye from ghcr, or build it locally?**
    - What we know: `ci.yml` pushes `ghcr.io/geniusventures/debian-bullseye:latest`; no local bullseye image exists on this host (verified live). ghcr-pull represents the exact CI artifact.
    - What's unclear: whether the ghcr tag is pullable without auth on this machine (CI logs in with `GITHUB_TOKEN`; a private package would need the user's token).
    - Recommendation: pull from ghcr as primary (simplest, frozen); if it fails, fall back to `docker build -f debian-bullseye/Dockerfile` — the script already centralizes the tag in `BULLSEYE_IMAGE` so this is a one-line change.
+   - RESOLVED: pull from ghcr as primary via `docker pull ghcr.io/geniusventures/debian-bullseye:latest`; the local-build fallback (`docker build -f debian-bullseye/Dockerfile`) is captured in 03-02 Task 1 as a script-header note + `BULLSEYE_IMAGE` env override.
 
 2. **Should the script commit the drift evidence to the repo (a `03-PARITY-REPORT.md`), or is printed stdout enough?**
    - What we know: D-08/D-09 require *documented* drift; the phase boundary says "produces verification evidence."
    - What's unclear: whether stdout capture at sign-off satisfies "documented," or a committed artifact is expected.
    - Recommendation: the script prints everything; the planner's verification step can tee the run output to a `03-PARITY-REPORT.md` artifact in the phase directory if the user wants durable evidence — confirm during plan review.
+   - RESOLVED: the script tees the full run output to `.planning/phases/03-parity-verification/03-PARITY-REPORT.md` (03-02 Task 2).
 
 ## Environment Availability
 
