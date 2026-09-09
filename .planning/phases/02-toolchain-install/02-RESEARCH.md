@@ -444,16 +444,16 @@ See "Toolchain Install Recipe — Runtime Glue" above.
 
 **Notes on claims otherwise:** every URL, archive name, and hash in the recipes is `[VERIFIED]` live this session or `[CITED]` from the parity source — not assumed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should mold and Temurin tarballs gain SHA256 pinning?**
+   - RESOLVED: keep parity (no extra pins) for Phase 2 — the analog pins only rustup; mold/Temurin are trusted via GitHub TLS. Live-verified Temurin SHA256 values are recorded above. Raise hardening as an explicit user decision if desired later.
    - What we know: the analog pins only rustup; mold/Temurin are trusted via GitHub TLS. Live-verified Temurin SHA256 values are recorded above; mold asset hashes are retrievable from the release page.
-   - What's unclear: whether the user wants stricter supply-chain hardening beyond parity.
    - Recommendation: keep parity (no extra pins) for Phase 2; raise as an explicit user decision if hardening is desired later.
 
 2. **Single final verification chain vs. per-block probes only?**
+   - RESOLVED: keep the per-block probes (parity) **and** append the consolidated chain (Section "Final Verification Chain") — it directly encodes the five success criteria and mirrors Phase 1's step-9 pattern.
    - What we know: D-02 mandates the Node probe in-layer; the analog embeds only `ld --version`.
-   - What's unclear: whether the planner prefers the additional consolidated verification heredoc.
    - Recommendation: keep the per-block probes (parity) **and** append the consolidated chain (Section "Final Verification Chain") — it directly encodes the five success criteria and mirrors Phase 1's step-9 pattern.
 
 ## Environment Availability
