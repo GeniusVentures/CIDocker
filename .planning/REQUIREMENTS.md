@@ -16,15 +16,15 @@ Requirements for the AlmaLinux 8 image. Each maps to roadmap phases.
 ### System Packages
 
 - [x] **PKG-01**: Installs EL8 equivalents of every bullseye package — `libcurl-devel`, `libsecret-devel`, `gtk3-devel`, `vulkan-loader` + `vulkan-loader-devel` + `vulkan-headers`, `libatomic`, `pkgconf-pkg-config`, `ruby` + `ruby-devel`, `clang` (via llvm-toolset module), `cmake`, `ninja-build`, `git`, `gh`, `wget`, `curl`, `dbus`, `gnome-keyring`, `jq`, `sudo`, plus `gcc`/`gcc-c++`/`make`/`binutils`
-- [ ] **PKG-02**: Seeded dbus `machine-id` and `git` safe.directory are configured
+- [x] **PKG-02**: Seeded dbus `machine-id` and `git` safe.directory are configured
 
 ### Toolchain
 
-- [ ] **TOOL-01**: mold 2.42.0 installed from upstream tarball with the `update-alternatives` ld shim (GCC 8.5 cannot pass `-fuse-ld=mold`)
-- [ ] **TOOL-02**: Node 24 installed (NodeSource, or official tarball to hold the glibc 2.28 floor)
-- [ ] **TOOL-03**: Rust 1.87.0 installed via SHA256-pinned rustup, `amd64` + `arm64` branches only
-- [ ] **TOOL-04**: Temurin JDK 25 installed via Adoptium tarball, `amd64` + `arm64` branches only
-- [ ] **TOOL-05**: Environment contract preserved (`RUSTUP_HOME`, `CARGO_HOME`, `JAVA_HOME`, `PATH`)
+- [x] **TOOL-01**: mold 2.42.0 installed from upstream tarball with the `update-alternatives` ld shim (GCC 8.5 cannot pass `-fuse-ld=mold`)
+- [x] **TOOL-02**: Node 24 installed (NodeSource, or official tarball to hold the glibc 2.28 floor)
+- [x] **TOOL-03**: Rust 1.87.0 installed via SHA256-pinned rustup, `amd64` + `arm64` branches only
+- [x] **TOOL-04**: Temurin JDK 25 installed via Adoptium tarball, `amd64` + `arm64` branches only
+- [x] **TOOL-05**: Environment contract preserved (`RUSTUP_HOME`, `CARGO_HOME`, `JAVA_HOME`, `PATH`)
 
 ### Parity & Verification
 
@@ -62,12 +62,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BASE-02 | Phase 1 | Complete |
 | BASE-03 | Phase 4 | Pending |
 | PKG-01 | Phase 1 | Complete |
-| PKG-02 | Phase 2 | Pending |
-| TOOL-01 | Phase 2 | Pending |
-| TOOL-02 | Phase 2 | Pending |
-| TOOL-03 | Phase 2 | Pending |
-| TOOL-04 | Phase 2 | Pending |
-| TOOL-05 | Phase 2 | Pending |
+| PKG-02 | Phase 2 | Complete |
+| TOOL-01 | Phase 2 | Complete |
+| TOOL-02 | Phase 2 | Complete |
+| TOOL-03 | Phase 2 | Complete |
+| TOOL-04 | Phase 2 | Complete |
+| TOOL-05 | Phase 2 | Complete |
 | PAR-01 | Phase 3 | Pending |
 | PAR-02 | Phase 3 | Pending |
 | PAR-03 | Phase 4 | Pending |

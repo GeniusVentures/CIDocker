@@ -15,7 +15,7 @@ upstream toolchain tarballs → behavioral parity verification → multi-arch si
 - Integer phases (1, 2, 3, 4): Planned milestone work
 
 - [x] **Phase 1: Base & Package Install** - `almalinux:8` base, ordered dnf repo enablement, full EL8 package set (completed 2026-09-08)
-- [ ] **Phase 2: Toolchain Install** - mold, Node 24, Rust 1.87.0, Temurin JDK 25, env contract, runtime glue
+- [x] **Phase 2: Toolchain Install** - mold, Node 24, Rust 1.87.0, Temurin JDK 25, env contract, runtime glue (completed 2026-09-09)
 - [ ] **Phase 3: Parity & Verification** - toolchain/behavioral parity vs `debian-bullseye`, GTK gap audit
 - [ ] **Phase 4: Multi-arch Verification** - `amd64` + `arm64` buildx sign-off, 32-bit exclusion
 
@@ -64,15 +64,15 @@ Plans:
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — mold 2.42.0 + update-alternatives ld shim, Node 24 (TOOL-01, TOOL-02)
+- [x] 02-01-PLAN.md — mold 2.42.0 + update-alternatives ld shim, Node 24 (TOOL-01, TOOL-02)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Rust 1.87.0 via SHA256-pinned rustup, Temurin JDK 25 (TOOL-03, TOOL-04)
+- [x] 02-02-PLAN.md — Rust 1.87.0 via SHA256-pinned rustup, Temurin JDK 25 (TOOL-03, TOOL-04)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 02-03-PLAN.md — ENV contract, runtime glue, Phase 2 verification chain (TOOL-05, PKG-02)
+- [x] 02-03-PLAN.md — ENV contract, runtime glue, Phase 2 verification chain (TOOL-05, PKG-02)
 
 ### Phase 3: Parity & Verification
 
@@ -112,6 +112,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Base & Package Install | 2/2 | Complete    | 2026-09-08 |
-| 2. Toolchain Install | 0/3 | Not started | - |
+| 2. Toolchain Install | 3/3 | Complete    | 2026-09-09 |
 | 3. Parity & Verification | 0/TBD | Not started | - |
 | 4. Multi-arch Verification | 0/TBD | Not started | - |
