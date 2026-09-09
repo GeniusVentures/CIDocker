@@ -396,17 +396,17 @@ grep -qE 'Platform:[[:space:]]+linux/arm64'  /tmp/manifest.txt
 | A4 | The smoke probe set completes comfortably within GitHub Actions default job timeout under QEMU emulation | Code Examples | Low — `--version` probes are milliseconds each; `java -version` is the slowest and still fast. |
 | A5 | The pushed ghcr.io image is readable by the same job's `docker pull`/`inspect` because `docker/login-action` authenticated earlier in the job | Architecture Patterns | Low — standard behavior; if the package is private, the job's own login still covers reads within the same run. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the new workflow use a `paths:` trigger filter?**
    - What we know: D-03 mandates a separate workflow; `ci.yml` triggers on plain `push` + `workflow_dispatch`.
    - What's unclear: whether to rebuild the Alma image on every push (including bullseye-only or docs changes).
-   - Recommendation: Default to mirroring `ci.yml` (`push` + `workflow_dispatch`) for simplicity; a `paths: [almalinux-8/**, .github/workflows/ci-almalinux.yml]` filter is an acceptable optional optimization at planner's discretion — flag for user only if the rebuild-on-every-push cost matters.
+   - RESOLVED: Default to mirroring `ci.yml` (`push` + `workflow_dispatch`) for simplicity; a `paths: [almalinux-8/**, .github/workflows/ci-almalinux.yml]` filter is an acceptable optional optimization at planner's discretion — flag for user only if the rebuild-on-every-push cost matters.
 
 2. **Does the consuming CI already point at a `:latest` tag or a digest?**
    - What we know: D-02 pins `:latest` only; bullseye is already consumed as `ghcr.io/geniusventures/debian-bullseye:latest`.
    - What's unclear: whether any downstream pipeline references the new image name yet (final thirdparty-CI verification is explicitly deferred out of this phase).
-   - Recommendation: Nothing to do in this phase beyond pushing `:latest`; the downstream pointer change is the deferred "final verification".
+   - RESOLVED: Nothing to do in this phase beyond pushing `:latest`; the downstream pointer change is the deferred "final verification".
 
 ## Environment Availability
 
