@@ -14,10 +14,11 @@ A maintained, security-supported CI base image that reproduces the existing buil
 
 - ✓ `debian-bullseye/` image — existing; provides Rust 1.87, Node 24, Temurin JDK 25, mold, and GTK/Vulkan toolchain (built on bullseye)
 - ✓ `almalinux-8/` image (Phase 1) — builds on `almalinux:8` (glibc 2.28) with the ordered dnf repo set and the full PKG-01 EL8 package list, verified in-image (`ldd --version` → 2.28, `dnf repolist`, `pkg-config --exists vulkan/gtk3/libsecret`)
+- ✓ `almalinux-8/` image (Phase 2) — full pinned toolchain (mold 2.42.0 via `update-alternatives` ld shim, Node 24.x via NodeSource rpm, Rust 1.87.0 via SHA256-pinned rustup 1.28.2, Temurin JDK 25.0.2) + byte-for-byte env contract + runtime glue, verified in-image (`ld` → mold 2.42.0, `node` → v24.x, `rustc` → 1.87.0, `java` → Temurin-25, `safe.directory` → `*`, machine-id identical)
 
 ### Active
 
-- [ ] New `almalinux-8/` image that reproduces the `debian-bullseye` toolchain on AlmaLinux 8 — **Phase 1 (base + packages) complete**; toolchain install (Phase 2), parity (Phase 3), multi-arch (Phase 4) pending
+- [ ] New `almalinux-8/` image that reproduces the `debian-bullseye` toolchain on AlmaLinux 8 — **Phase 1 (base + packages) + Phase 2 (toolchain) complete**; parity (Phase 3), multi-arch (Phase 4) pending
 - [ ] Same toolchain parity: Rust 1.87.0, Node 24, Temurin JDK 25, mold, clang, cmake, pkg-config, git, gh, wget, curl, ruby, libsecret, dbus, gnome-keyring, ninja-build, Vulkan, GTK3, jq, libatomic
 - [ ] Multi-arch support for `amd64` and `arm64`
 - [x] glibc 2.28 (older than bullseye's 2.31) for broad binary compatibility — validated in Phase 1
@@ -77,4 +78,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-09-08 — Phase 1 (Base & Package Install) complete*
+*Last updated: 2026-09-09 — Phase 2 (Toolchain Install) complete*
