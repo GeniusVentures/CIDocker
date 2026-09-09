@@ -49,8 +49,8 @@ jobs:
       - name: Verify multi-arch manifest (PAR-03)
         run: |
           docker buildx imagetools inspect --raw ghcr.io/geniusventures/almalinux-8:latest > /tmp/manifest.json
-          grep -q '"architecture":"amd64"' /tmp/manifest.json
-          grep -q '"architecture":"arm64"' /tmp/manifest.json
+          grep -Eq '"architecture":[[:space:]]*"amd64"' /tmp/manifest.json
+          grep -Eq '"architecture":[[:space:]]*"arm64"' /tmp/manifest.json
 
       - name: Pull-by-tag resolution (amd64 + arm64)
         run: |
