@@ -101,3 +101,40 @@ dnf info libcurl-devel | grep -E '^Repo' || true
 dnf info vulkan-loader-devel | grep -E '^Repo' || true
 
 EOF
+
+# mold: EL8 has no mold package and GCC 8.5 cannot pass -fuse-ld=mold, so install
+# the upstream static build and register it as the default ld. Revert with
+# `update-alternatives --set ld /usr/bin/ld.bfd` if a link ever misbehaves.
+RUN <<EOF
+
+set -eux
+
+case "$(uname -m)" in \
+    x86_64) moldArch='x86_64' ;; \
+    aarch64) moldArch='aarch64' ;; \
+    *) echo >&2 "unsupported architecture for mold: $(uname -m)"; exit 1 ;; \
+esac; \
+
+moldVersion="2.42.0"; \
+moldArchive="mold-${moldVersion}-${moldArch}-linux.tar.gz"; \
+cd /tmp; \
+wget -q "https://github.com/rui314/mold/releases/download/v${moldVersion}/${moldArchive}"; \
+tar -xzf "${moldArchive}" -C /usr/local --strip-components=1; \
+rm "${moldArchive}"; \
+update-alternatives --install /usr/bin/ld ld /usr/local/bin/ld.mold 100; \
+ld --version;
+
+EOF
+
+# Node 24 (rolling, parity with bullseye). The NodeSource rpm repo was enabled in
+# Phase 1 step 5; nothing to configure here beyond the install. Node 24 sits exactly
+# on the glibc 2.28 floor — the clean-exit probe asserts the binary links and runs.
+RUN <<EOF
+
+set -eux
+
+dnf install -y nodejs && dnf clean all
+node --version
+node -e 'process.exit(0)'
+
+EOF
