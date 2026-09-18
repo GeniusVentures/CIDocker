@@ -58,6 +58,8 @@ RUN dnf module enable ruby:3.1 -y
 
 # 8) Single install transaction — full mapped PKG-01 package set.
 #    The Node runtime is deliberately EXCLUDED (Phase 2). chkconfig is already in the bootstrap layer.
+#    git-lfs comes from EPEL (enabled in step 2): downstream repo CI checkouts
+#    use actions/checkout with lfs:true (e.g. SuperGenius's .cap test fixtures).
 RUN <<EOF
 
 set -eux
@@ -66,6 +68,7 @@ dnf install -y \
     sudo \
     pkgconf-pkg-config \
     git \
+    git-lfs \
     ruby ruby-devel \
     clang \
     cmake \
@@ -94,7 +97,7 @@ RUN <<EOF
 set -eux
 
 pkg-config --version && gcc --version | head -1 && clang --version | head -1 \
-  && cmake --version | head -1 && ninja --version && git --version \
+  && cmake --version | head -1 && ninja --version && git --version && git-lfs version \
   && gh --version && ruby --version && wget --version | head -1 \
   && curl --version | head -1 && jq --version && ld --version | head -1 \
   && pkg-config --exists vulkan && pkg-config --exists gtk+-3.0 \
@@ -110,6 +113,23 @@ dnf info libsecret-devel | grep -E '^Repo' || true
 dnf info libcurl-devel | grep -E '^Repo' || true
 dnf info vulkan-loader-devel | grep -E '^Repo' || true
 
+EOF
+
+# sudo for arbitrary runner UIDs. Container jobs may execute as the host runner
+# service user (1001 on one machine, 1002 on another); the runner appends that
+# user's line to /etc/passwd but creates no /etc/shadow entry, and EL8 pam_unix
+# account validation then fails with "Authentication service cannot retrieve
+# authentication info" (Debian's Linux-PAM 1.4 tolerates the shadow-less entry;
+# bullseye-era jobs also ran as container root, where sudo needs no PAM). The
+# UID differs per machine, so the fix must be UID-agnostic: passwordless sudo
+# for any user, plus !pam_acct_mgmt to skip the account phase that trips on the
+# missing shadow entry. Equivalent access to the root the job already has via
+# the workspace mounts.
+RUN <<EOF
+set -eux
+printf 'Defaults !pam_acct_mgmt\nALL ALL=(ALL) NOPASSWD: ALL\n' > /etc/sudoers.d/99-ci-arbitrary-uid
+chmod 440 /etc/sudoers.d/99-ci-arbitrary-uid
+visudo -cf /etc/sudoers.d/99-ci-arbitrary-uid >/dev/null
 EOF
 
 # mold: EL8 has no mold package and GCC 8.5 cannot pass -fuse-ld=mold, so install
