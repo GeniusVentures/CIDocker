@@ -8,9 +8,19 @@ on:
   push:
   workflow_dispatch:
 
+# Self-hosted fleet convention (genius-ai-boss cmake.yml): busy runners
+# queue with no hosted fallback, so rapid successive pushes could otherwise
+# run OUT OF ORDER and publish a stale :latest over a newer one. Supersede
+# earlier pushes on the same ref; never cancel manual dispatches.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
 jobs:
   docker:
-    runs-on: ubuntu-latest
+    # sg-ubuntu-linux runs the genius-ai-boss container lanes, so Docker,
+    # buildx and QEMU multi-arch work the same as on the hosted image.
+    runs-on: [self-hosted, sg-ubuntu-linux]
     steps:
       - name: Checkout
         uses: actions/checkout@v6
